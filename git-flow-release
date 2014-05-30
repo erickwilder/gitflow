@@ -125,7 +125,6 @@ parse_args() {
 
 	# read arguments into global variables
 	VERSION=$1
-	BRANCH=$PREFIX$VERSION
 
 	if [ -n "$FLAGS_autoinc" ]; then
 		if [ "$FLAGS_autoinc" = "major" ]; then
@@ -138,6 +137,8 @@ parse_args() {
 			VERSION=$1
 		fi
 	fi
+	
+	BRANCH=$PREFIX$VERSION
 }
 
 require_version_arg() {
