@@ -119,12 +119,25 @@ cmd_help() {
 
 parse_args() {
 	# parse options
+	DEFINE_string autoinc "" "Auto increment desired version: major, minor or patch" B
 	FLAGS "$@" || exit $?
 	eval set -- "${FLAGS_ARGV}"
 
 	# read arguments into global variables
 	VERSION=$1
 	BRANCH=$PREFIX$VERSION
+
+	if [ -n "$FLAGS_autoinc" ]; then
+		if [ "$FLAGS_autoinc" = "major" ]; then
+			VERSION=$(git tag | sort -V | tail -n1 | awk 'BEGIN { FS = "." }; {print $1+1"."$2"."$3}')
+		elif [ "$FLAGS_autoinc" = "minor" ]; then
+			VERSION=$(git tag | sort -V | tail -n1 | awk 'BEGIN { FS = "." }; {print $1"."$2+1"."$3}')
+		elif [ "$FLAGS_autoinc" = "patch" ]; then
+			VERSION=$(git tag | sort -V | tail -n1 | awk 'BEGIN { FS = "." }; {print $1"."$2"."$3+1}')
+		else
+			VERSION=$1
+		fi
+	fi
 }
 
 require_version_arg() {
