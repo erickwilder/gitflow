@@ -82,6 +82,13 @@ git_local_branches() { git branch --no-color | sed 's/^[* ] //'; }
 git_remote_branches() { git branch -r --no-color | sed 's/^[* ] //'; }
 git_all_branches() { ( git branch --no-color; git branch -r --no-color) | sed 's/^[* ] //'; }
 git_all_tags() { git tag; }
+git_version_tags() {
+	local tag_prefix=$(git config --get gitflow.prefix.versiontag)
+	git tag | grep -E "^${tag_prefix}?[0-9]+\.[0-9]+(\.[0-9])?"
+}
+git_last_tag() {
+	git_version_tags | sort -V | tail -n 1
+}
 
 git_current_branch() {
 	git branch --no-color | grep '^\* ' | grep -v 'no branch' | sed 's/^* //g'
